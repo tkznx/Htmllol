@@ -1,0 +1,58 @@
+من می توانم به شما یک نمونه ساده از برنامه ورود به سیستم با استفاده از PHP بدهم:
+
+HTML فرم ورود به سیستم:
+
+
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Login Form</title>
+</head>
+<body>
+ <h2>Login Form</h2>
+ <form method="post" action="login.php">
+  <label>Username:</label><br>
+  <input type="text" name="username"><br>
+  <label>Password:</label><br>
+  <input type="password" name="password"><br><br>
+  <input type="submit" value="Login">
+ </form>
+</body>
+</html>
+
+
+PHP کد برای پردازش فرم ورود به سیستم:
+
+
+<?php
+session_start();
+if(isset($_POST['username']) && isset($_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // اتصال به پایگاه داده
+    $conn = mysqli_connect("localhost", "username", "password", "database_name");
+
+    // بررسی اتصال
+    if(!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+
+    // بررسی نام کاربری و رمز عبور
+    $sql = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $result = mysqli_query($conn, $sql);
+
+    // اگر نام کاربری و رمز عبور درست بود، کاربر وارد سیستم می شود
+    if(mysqli_num_rows($result) == 1) {
+        $_SESSION['username'] = $username;
+        header("Location: dashboard.php");
+    } else {
+        echo "Invalid username or password";
+    }
+}
+?>
+
+
+در این کد، ابتدا یک session شروع می شود. سپس، اگر فرم ورود به سیستم ارسال شده باشد، نام کاربری و رمز عبور از فرم دریافت و به پایگاه داده ارسال می شوند. سپس، بررسی می شود که آیا نام کاربری و رمز عبور درست است یا خیر. اگر درست بودند، session برای نام کاربری شروع می شود و کاربر به صفحه داشبورد منتقل می شود. در غیر این صورت، پیغام خطا نمایش داده می شود. 
+
+لازم به ذکر است که این کد فقط یک نمونه ساده از برنامه ورود به سیستم است و باید با توجه به نیازهای شما تغییر داده شود. همچنین، باید از رمزنگاری مناسب برای رمز عبور کاربران استفاده کنید.
